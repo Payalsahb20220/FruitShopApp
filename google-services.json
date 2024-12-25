@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "34758574044",
+    "project_id": "fruitsshop-bf9a7",
+    "storage_bucket": "fruitsshop-bf9a7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34758574044:android:6827009a67d900bc371919",
+        "android_client_info": {
+          "package_name": "com.Pramod.FruitsShop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDebaOVN2kSl60Ei54jc4UIUj2y9PRWHEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
