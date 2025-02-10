@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';  // For profile icon
 import { launchImageLibrary } from 'react-native-image-picker'; // Import image picker
 
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import * as ImagePicker from 'expo-image-picker';
 
 
 
@@ -50,39 +51,50 @@ export default function HomeScreen() {
 
   // Function to handle image upload
 const handleImageUpload = async () => {
-  const result = await launchImageLibrary({
-    mediaType: 'photo',
-    quality: 1,
-  });
-
-  if (!result.didCancel && result.assets?.[0].uri) {
-    const imageUri = result.assets[0].uri;
-
-    try {
-      // Upload image to Firebase Storage
-      const storageRef = getStorage();
-      const imageRef = ref(storageRef, `profilePhotos/${auth.currentUser?.uid}`);
-      const response = await fetch(imageUri);
-      const blob = await response.blob();
-
-      await uploadBytes(imageRef, blob);
-
-      // Get the download URL
-      const photoUrl = await getDownloadURL(imageRef);
-
-      // Update Firestore with the profile photo URL
-      const db = getFirestore();
-      const userDocRef = doc(db, 'users', auth.currentUser?.uid!);
-      await updateDoc(userDocRef, { profilePhotoUrl: photoUrl });
-
-      // Update local state
-      setUserDetails((prev: any) => ({ ...prev, profilePhotoUrl: photoUrl }));
-      Alert.alert('Success', 'Profile photo updated successfully!');
-    } catch (error) {
-      console.error('Error uploading profile photo:', error);
-      Alert.alert('Error', 'Failed to upload profile photo.');
+  
+    //  Request permission to access photos
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'You need to allow access to the photo library.');
+      return;
     }
-  }
+
+    // Open image picker
+    const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+    });
+
+    if (!result.canceled && result.assets.length > 0) {
+      const imageUri = result.assets[0].uri;
+
+      try {
+        // Upload image to Firebase Storage
+        const storageRef = getStorage();
+        const imageRef = ref(storageRef, `profilePhotos/${auth.currentUser?.uid}`);
+        const response = await fetch(imageUri);
+        const blob = await response.blob();
+
+        await uploadBytes(imageRef, blob);
+
+        // Get the download URL
+        const photoUrl = await getDownloadURL(imageRef);
+
+        // Update Firestore with the profile photo URL
+        const db = getFirestore();
+        const userDocRef = doc(db, 'users', auth.currentUser?.uid!);
+        await updateDoc(userDocRef, { profilePhotoUrl: photoUrl });
+
+        // Update local state
+        setUserDetails((prev: any) => ({ ...prev, profilePhotoUrl: photoUrl }));
+        Alert.alert('Success', 'Profile photo updated successfully!');
+      } catch (error) {
+        console.error('Error uploading profile photo:', error);
+        Alert.alert('Error', 'Failed to upload profile photo.');
+      }
+    }
+  
 };
 
   return (
@@ -105,6 +117,16 @@ const handleImageUpload = async () => {
 
     <View style={styles.container}>
     {/* Top Right Buttons */}
+    {/* Wishlist Button */}
+    {userDetails && (
+        <TouchableOpacity
+          style={styles.wishlistButton}
+          onPress={() => navigation.navigate('Wishlist')}
+        >
+          <Icon name="favorite" size={35} color="#FFA500" />
+        </TouchableOpacity>
+      )}
+
     <View style={styles.topRightButtons}>
     {userDetails ? (
           <>
@@ -300,7 +322,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: '#333',
   },
+  wishlistButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    zIndex: 10,
+  },
   
   
 });
+
 

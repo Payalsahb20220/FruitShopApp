@@ -1,12 +1,28 @@
 import React from 'react';
-import { View, FlatList, Text, StyleSheet } from 'react-native';
+import { View, FlatList, Text, StyleSheet , Button} from 'react-native';
 import { products } from '../data'; // Import the product list
 import ProductCard from '../components/ProductCard';
 import { useCart } from '../contexts/CartContext'; // Use CartContext for global cart state
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/types';
 
+type CartScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Cart'>;
 const ProductsScreen: React.FC = () => {
   const { addToCart, cart } = useCart(); // Access global cart state and methods
 
+  const navigation = useNavigation<CartScreenNavigationProp>();
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          title="Go to Cart"
+          onPress={() => navigation.navigate('Cart')} // Ensure 'Cart' is your route name for CartScreen
+          color="#FFA500"
+        />
+      ),
+    });
+  }, [navigation]);
   const handleAddToCart = (product: any, quantity: number) => {
     if (quantity > 0) {
       addToCart(product, quantity); // Add product with the specified quantity to the cart

@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState , useEffect } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity ,Alert } from 'react-native';
+import { getFirestore, doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore';
+import { auth } from '../firebaseConfig';
 
 interface Product {
   id: number;
@@ -17,6 +19,48 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   const [liked, setLiked] = useState(false);
   const [quantity, setQuantity] = useState(0); // Default quantity is 0
+
+  useEffect(() => {
+    const checkWishlist = async () => {
+      if (!auth.currentUser) return;
+      const db = getFirestore();
+      const userId = auth.currentUser.uid;
+      const wishlistRef = doc(db, "wishlist", `${userId}_${product.id}`);
+      
+      const docSnap = await getDoc(wishlistRef);
+      if (docSnap.exists()) {
+        setLiked(true);
+      }
+    };
+
+    checkWishlist();
+  }, [product.id]);
+
+  const handleLike = async () => {
+    if (!auth.currentUser) {
+      Alert.alert("Login Required", "Please log in to use the wishlist.");
+      return;
+    }
+
+    const db = getFirestore();
+    const userId = auth.currentUser.uid;
+    const wishlistRef = doc(db, "wishlist", `${userId}_${product.id}`);
+
+    if (liked) {
+      await deleteDoc(wishlistRef);
+      setLiked(false);
+    } else {
+      await setDoc(wishlistRef, {
+        userId,
+        productId: product.id,
+        name: product.name,
+        image: product.image,
+        price: product.price,
+      });
+      setLiked(true);
+    }
+  };
+
 
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
   const decreaseQuantity = () =>
@@ -43,7 +87,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       {/* Like Button */}
       <TouchableOpacity
         style={[styles.likeButton, liked ? styles.liked : styles.notLiked]}
-        onPress={() => setLiked(!liked)}
+        onPress={handleLike}
       >
         <Text style={styles.likeText}>{liked ? '❤️ Liked' : '🤍 Like'}</Text>
       </TouchableOpacity>

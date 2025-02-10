@@ -13,6 +13,8 @@ export type RootStackParamList = {
     cart: CartItem[];
     address:string;
   };
+  Wishlist:undefined;
+
 };
   
   
