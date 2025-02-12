@@ -2,9 +2,13 @@
   "expo": {
     "name": "FruitShopApp",
     "slug": "FruitShopApp",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "version": "1.0.0",
-    "scheme": "fruitshopapp",  
+    "scheme": "fruitshopapp",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -22,8 +26,13 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff",
-        "permissions": ["CAMERA", "READ_EXTERNAL_STORAGE"]
-      }
+        "permissions": [
+          "CAMERA",
+          "READ_EXTERNAL_STORAGE"
+          
+        ]
+      },
+      "package": "com.anonymous.FruitShopApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
