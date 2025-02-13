@@ -115,9 +115,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   image: {
-    width: '100%',
-    height: 150,
-    borderRadius: 8,
+    width: 200,
+    height: 200,
+    borderRadius: 10,
   },
   name: {
     fontSize: 18,

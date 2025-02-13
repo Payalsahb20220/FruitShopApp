@@ -1,3 +1,5 @@
+console.log(require('./assets/OrangeJuice.jpeg'));
+
 export const products = [
     {
       id: 1,
@@ -5,7 +7,7 @@ export const products = [
       price: 3.5,
       quantity: 1,
       description: 'Freshly squeezed orange juice.',
-      image: require('./assets/OrangeJuice.jpeg'), // Placeholder image
+      image: require('./assets/OrangeJuice.jpeg'), // Placeholder image    
     },
     {
       id: 2,
