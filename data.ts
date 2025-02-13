@@ -13,7 +13,7 @@ export const products = [
       price: 4.0,
       quantity: 1,
       description: 'Delicious and refreshing apple juice.',
-      image: 'https://via.placeholder.com/150/FF4500', // Placeholder image
+      image: require('./assets/Apple juice.jpeg'), // Placeholder image
     },
     {
       id: 3,
@@ -21,7 +21,7 @@ export const products = [
       price: 3.8,
       quantity: 1,
       description: 'Sweet and tangy grape juice.',
-      image: 'https://via.placeholder.com/150/6A0DAD', // Placeholder image
+      image: require('./assets/GrapesJuice.jpeg'), // Placeholder image
     },
     {
       id: 4,
@@ -29,7 +29,7 @@ export const products = [
       price: 4.5,
       quantity: 1,
       description: 'Refreshing pineapple juice with a tropical flavor.',
-      image: 'https://via.placeholder.com/150/FFD700', // Placeholder image
+      image: require('./assets/PineappleJuice.jpeg'), // Placeholder image
     },
     {
       id: 5,
@@ -37,7 +37,7 @@ export const products = [
       price: 4.2,
       quantity: 1,
       description: 'Tart and flavorful cranberry juice.',
-      image: 'https://via.placeholder.com/150/DC143C', // Placeholder image
+      image: require('./assets/CranberryJuice.jpeg'), // Placeholder image
     },
     {
       id: 6,
@@ -45,7 +45,7 @@ export const products = [
       price: 4.5,
       quantity: 1,
       description: 'Rich and smooth mango juice.',
-      image: 'https://via.placeholder.com/150/FF4500', // Placeholder image
+      image: require('./assets/MangoJuice.jpeg'), // Placeholder image
     },
     {
       id: 7,
@@ -53,7 +53,7 @@ export const products = [
       price: 5.0,
       quantity: 1,
       description: 'Healthy and delicious pomegranate juice.',
-      image: 'https://via.placeholder.com/150/8B0000', // Placeholder image
+      image: require('./assets/PomegranateJuice.jpeg'), // Placeholder image
     },
     {
       id: 8,
@@ -61,7 +61,7 @@ export const products = [
       price: 3.2,
       quantity: 1,
       description: 'Nutritious tomato juice.',
-      image: 'https://via.placeholder.com/150/FF6347', // Placeholder image
+      image: require('./assets/TomatoJuice.jpeg'), // Placeholder image
     },
     {
       id: 9,
@@ -69,7 +69,7 @@ export const products = [
       price: 3.0,
       quantity: 1,
       description: 'Classic and refreshing lemonade.',
-      image: 'https://via.placeholder.com/150/FFFACD', // Placeholder image
+      image: require('./assets/Lemonade.jpeg'), // Placeholder image
     },
     {
       id: 10,
@@ -77,7 +77,7 @@ export const products = [
       price: 4.3,
       quantity: 1,
       description: 'Sweet and aromatic peach juice.',
-      image: 'https://via.placeholder.com/150/FFB6C1', // Placeholder image
+      image: require('./assets/PeachJuice.jpeg'), // Placeholder image
     },
     {
       id: 11,
