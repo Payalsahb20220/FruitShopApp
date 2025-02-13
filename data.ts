@@ -5,7 +5,7 @@ export const products = [
       price: 3.5,
       quantity: 1,
       description: 'Freshly squeezed orange juice.',
-      image: 'https://via.placeholder.com/150/FFA500', // Placeholder image
+      image: require('./assets/OrangeJuice.jpeg'), // Placeholder image
     },
     {
       id: 2,
