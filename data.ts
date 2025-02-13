@@ -87,7 +87,7 @@ export const products = [
       price: 2.0,
       quantity: 1,
       description: 'Fresh oranges, perfect for juicing.',
-      image: 'https://via.placeholder.com/150/FFA500', // Placeholder image
+      image: require('./assets/Orange.jpeg'), // Placeholder image
     },
     {
       id: 12,
@@ -95,7 +95,7 @@ export const products = [
       price: 2.5,
       quantity: 1,
       description: 'Fresh and juicy apples.',
-      image: 'https://via.placeholder.com/150/FF4500', // Placeholder image
+      image: require('./assets/Apple.jpeg'), // Placeholder image
     },
     {
       id: 13,
@@ -103,7 +103,7 @@ export const products = [
       price: 3.0,
       quantity: 1,
       description: 'Sweet and seedless grapes.',
-      image: 'https://via.placeholder.com/150/6A0DAD', // Placeholder image
+      image: require('./assets/Grapes.jpeg'), // Placeholder image
     },
     {
       id: 14,
@@ -111,7 +111,7 @@ export const products = [
       price: 3.8,
       quantity: 1,
       description: 'Fresh pineapple with a tangy taste.',
-      image: 'https://via.placeholder.com/150/FFD700', // Placeholder image
+      image: require('./assets/Pineapple.jpeg'), // Placeholder image
     },
     {
       id: 15,
@@ -119,7 +119,7 @@ export const products = [
       price: 5.0,
       quantity: 1,
       description: 'Tart and fresh cranberries.',
-      image: 'https://via.placeholder.com/150/DC143C', // Placeholder image
+      image: require('./assets/Cranberries.jpeg'), // Placeholder image
     },
     {
       id: 16,
@@ -127,7 +127,7 @@ export const products = [
       price: 3.5,
       quantity: 1,
       description: 'Sweet and ripe mangoes.',
-      image: 'https://via.placeholder.com/150/FF4500', // Placeholder image
+      image: require('./assets/Mango.jpeg'), // Placeholder image
     },
     {
       id: 17,
@@ -135,7 +135,7 @@ export const products = [
       price: 4.0,
       quantity: 1,
       description: 'Juicy and fresh pomegranates.',
-      image: 'https://via.placeholder.com/150/8B0000', // Placeholder image
+      image: require('./assets/Pomegranate.jpeg'), // Placeholder image
     },
     {
       id: 18,
@@ -143,7 +143,7 @@ export const products = [
       price: 1.8,
       quantity: 1,
       description: 'Fresh and ripe tomatoes.',
-      image: 'https://via.placeholder.com/150/FF6347', // Placeholder image
+      image: require('./assets/Tomatoes.jpeg'), // Placeholder image
     },
     {
       id: 19,
@@ -151,7 +151,7 @@ export const products = [
       price: 2.0,
       quantity: 1,
       description: 'Zesty and fresh lemons.',
-      image: 'https://via.placeholder.com/150/FFFACD', // Placeholder image
+      image: require('./assets/Lemons.jpeg'), // Placeholder image
     },
     {
       id: 20,
@@ -159,7 +159,7 @@ export const products = [
       price: 4.0,
       quantity: 1,
       description: 'Sweet and juicy peaches.',
-      image: 'https://via.placeholder.com/150/FFB6C1', // Placeholder image
+      image: require('./assets/Peaches.jpeg'), // Placeholder image
     },
   ];
   
