@@ -235,6 +235,8 @@ import { User } from 'firebase/auth';
 import { RootStackParamList } from '../navigation/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
+import { Platform } from 'react-native';
+
 
 export interface CartItem {
   id: number;
@@ -257,6 +259,24 @@ export default function CartScreen() {
   const [animatedHeight] = useState(new Animated.Value(0)); // Animated value for height transition
   const navigation = useNavigation<CartScreenNavigationProp>();
 
+  const showAlert = (title: string, message: string, onRemove: () => void) => {
+  if (Platform.OS === 'web') {
+    const confirmation = window.confirm(`${title}: ${message}`);
+    if (confirmation) {
+      onRemove();
+    }
+  } else {
+    Alert.alert(
+      title,
+      message,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Remove', onPress: onRemove },
+      ]
+    );
+  }
+};
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user); // Sets the user if logged in
@@ -265,10 +285,7 @@ export default function CartScreen() {
   }, []);
 
   const handleRemove = (id: number) => {
-    Alert.alert('Remove Item', 'Are you sure you want to remove this item from your cart?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Remove', onPress: () => removeFromCart(id) },
-    ]);
+    showAlert('Remove Item', 'Are you sure you want to remove this item from your cart?', () => removeFromCart(id));
   };
 
   const sendOrderMessage = (paymentType: string) => {
@@ -295,20 +312,17 @@ export default function CartScreen() {
   const handleCheckout = () => {
     if (!currentUser) {
       // If user not logged in, navigate to login
-      Alert.alert(
+      showAlert(
         'Authentication Required',
         'You need to log in to proceed to checkout.',
-        [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Login', onPress: () => navigation.navigate('Login') },
-        ]
+        () => navigation.navigate('Login')
       );
     } else if (!name || !contactNumber || !address) {
-      Alert.alert('Missing Information', 'Please provide your name , contact number and address.');
+      showAlert('Missing Information', 'Please provide your name , contact number and address.' , () => {});
     } else if (selectedPayment === 'Cash on Delivery') {
       // Confirm Cash on Delivery order
-      Alert.alert('Order Confirmed', 'Your order has been placed and will be paid on delivery.');
-      sendOrderMessage('Cash on Delivery');
+      showAlert('Order Confirmed', 'Your order has been placed and will be paid on delivery.' , () => sendOrderMessage('Cash on Delivery'));
+      
     } else if (selectedPayment === 'Online Payment') {
       // Navigate to Online Payment
       navigation.navigate('OnlinePayment', {
@@ -319,7 +333,7 @@ export default function CartScreen() {
         address,
       });
     } else {
-      Alert.alert('Select Payment Method', 'Please choose a payment method to proceed.');
+      showAlert('Select Payment Method', 'Please choose a payment method to proceed.' , () => {});
     }
   };
 

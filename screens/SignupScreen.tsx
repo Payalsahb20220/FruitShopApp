@@ -7,6 +7,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/types';
 import { sendEmailVerification } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { Platform } from 'react-native';
 
 
 
@@ -22,9 +23,18 @@ export default function SignupScreen() {
   const [isLoading, setIsLoading] = useState(false); // For button state
   const navigation = useNavigation<SignupScreenNavigationProp>();
 
+  const showAlert = (title: string, message: string) => {
+    if (Platform.OS === 'web') {
+      window.alert(`${title}: ${message}`);
+    } else {
+      Alert.alert(title, message);
+    }
+  };
+  
+
   const handleSignup = async () => {
     if (!name || !mobile || !address || !email || !password) {
-      Alert.alert("Error", "All fields are required!");
+      showAlert("Error", "All fields are required!");
       return;
     }
 
@@ -51,11 +61,11 @@ export default function SignupScreen() {
 
 
       console.log("User signed up:", userCredential.user);
-      Alert.alert("Success", "Account created successfully! Please verify your email before logging in.");
+      showAlert("Success", "Account created successfully! Please verify your email before logging in.");
       navigation.navigate("Home"); // Navigate after success
     } catch (error: any) {
       console.error("Signup Error:", error.message);
-      Alert.alert("Error", error.message);
+      showAlert("Error", error.message);
     } finally {
       setIsLoading(false); // Reset button state
     }

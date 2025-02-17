@@ -5,6 +5,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/types';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
+import { Platform } from 'react-native';
+
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -14,9 +16,17 @@ export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false); // For button state
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
+  const showAlert = (title: string, message: string) => {
+    if (Platform.OS === 'web') {
+      window.alert(`${title}: ${message}`);
+    } else {
+      Alert.alert(title, message);
+    }
+  };
+
   const handleLogin = async () => {
     if (!emailOrMobile || !password) {
-      Alert.alert("Error", "Both fields are required!");
+      showAlert("Error", "Both fields are required!");
       return;
     }
 
@@ -27,7 +37,7 @@ export default function LoginScreen() {
 
       // Check if email is verified
       if (!user.emailVerified) {
-        Alert.alert(
+        showAlert(
           "Email Not Verified",
           "Please verify your email before logging in."
         );
@@ -35,11 +45,11 @@ export default function LoginScreen() {
       }
 
       console.log("User logged in:", user);
-      Alert.alert("Success", "Logged in successfully!");
+      showAlert("Success", "Logged in successfully!");
       navigation.navigate("Home"); // Navigate after success
     } catch (error: any) {
       console.error("Login Error:", error.message);
-      Alert.alert("Error", error.message);
+      showAlert("Error", error.message);
     } finally {
       setIsLoading(false); // Reset button state
     }

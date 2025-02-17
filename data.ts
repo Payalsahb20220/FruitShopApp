@@ -1,4 +1,3 @@
-console.log(require('./assets/OrangeJuice.jpeg'));
 
 export const products = [
     {

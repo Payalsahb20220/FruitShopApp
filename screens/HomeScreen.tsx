@@ -5,12 +5,11 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/types';
 import { auth } from '../firebaseConfig';
 import { getFirestore, doc, getDoc , updateDoc} from 'firebase/firestore';
-import Icon from 'react-native-vector-icons/MaterialIcons';  // For profile icon
 import { launchImageLibrary } from 'react-native-image-picker'; // Import image picker
-
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 
+import { Ionicons , MaterialIcons } from '@expo/vector-icons';
 
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -123,7 +122,7 @@ const handleImageUpload = async () => {
           style={styles.wishlistButton}
           onPress={() => navigation.navigate('Wishlist')}
         >
-          <Icon name="favorite" size={35} color="#FFA500" />
+          <MaterialIcons name="favorite" size={35} color="#FFA500" />
         </TouchableOpacity>
       )}
 
@@ -131,7 +130,7 @@ const handleImageUpload = async () => {
     {userDetails ? (
           <>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <Icon name="account-circle" size={45} color="#FFA500" />
+              <MaterialIcons name="account-circle" size={45} color="#FFA500" />
             </TouchableOpacity>
 
             {/* Profile Modal */}
@@ -152,7 +151,7 @@ const handleImageUpload = async () => {
                         />
                       ) : (
                         <View style={styles.placeholderImage}>
-                          <Icon name="person" size={50} color="#aaa" />
+                          <MaterialIcons name="person" size={50} color="#aaa" />
                         </View>
                       )}
                     </TouchableOpacity>

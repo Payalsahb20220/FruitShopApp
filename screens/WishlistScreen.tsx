@@ -3,6 +3,8 @@ import { View, Text, FlatList, Image, StyleSheet , TouchableOpacity } from 'reac
 import { getFirestore, collection, query, where, getDocs , deleteDoc , doc } from 'firebase/firestore';
 import { auth } from '../firebaseConfig';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Ionicons , MaterialIcons } from '@expo/vector-icons';
+
 
 export default function WishlistScreen() {
   const [wishlist, setWishlist] = useState<any[]>([]);
@@ -61,7 +63,7 @@ export default function WishlistScreen() {
               </View>
               {/*  Delete Button (Aligned with Items) */}
               <TouchableOpacity onPress={() => handleDelete(item.id)} style={styles.deleteButton}>
-                <Icon name="delete" size={24} color="#FFA500" />
+                <MaterialIcons name="delete" size={24} color="#FFA500" />
               </TouchableOpacity>
             </View>
           )}

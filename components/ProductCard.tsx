@@ -2,6 +2,8 @@ import React, { useState , useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity ,Alert } from 'react-native';
 import { getFirestore, doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore';
 import { auth } from '../firebaseConfig';
+import { Platform } from 'react-native';
+
 
 interface Product {
   id: number;
@@ -19,6 +21,14 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   const [liked, setLiked] = useState(false);
   const [quantity, setQuantity] = useState(0); // Default quantity is 0
+
+  const showAlert = (title: string, message: string) => {
+    if (Platform.OS === 'web') {
+      alert(`${title}: ${message}`);
+    } else {
+      Alert.alert(title, message);
+    }
+  };
 
   useEffect(() => {
     const checkWishlist = async () => {
@@ -38,7 +48,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
 
   const handleLike = async () => {
     if (!auth.currentUser) {
-      Alert.alert("Login Required", "Please log in to use the wishlist.");
+      showAlert("Login Required", "Please log in to use the wishlist.");
       return;
     }
 
@@ -68,7 +78,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
 
   return (
     <View style={styles.card}>
-      <Image source={{ uri:product.image }} style={styles.image} />
+      <Image source={ product.image } style={styles.image} />
       <Text style={styles.name}>{product.name}</Text>
       <Text style={styles.description}>{product.description}</Text>
       <Text style={styles.price}>₹{product.price}</Text>
@@ -115,9 +125,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   image: {
-    width: 200,
+    width: '100%',
     height: 200,
     borderRadius: 10,
+   
   },
   name: {
     fontSize: 18,
