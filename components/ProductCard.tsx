@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity ,Alert } from 'react-na
 import { getFirestore, doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore';
 import { auth } from '../firebaseConfig';
 import { Platform } from 'react-native';
+import { useCart } from '../contexts/CartContext';
 
 
 interface Product {
@@ -15,12 +16,18 @@ interface Product {
 
 interface ProductCardProps {
   product: Product;
-  onAddToCart: (product: Product, quantity: number) => void;
+  // onAddToCart: (product: Product, quantity: number) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { addToCart, updateCartQuantity, cart  , removeFromCart} = useCart();
   const [liked, setLiked] = useState(false);
-  const [quantity, setQuantity] = useState(0); // Default quantity is 0
+  // const [quantity, setQuantity] = useState(0); // Default quantity is 0
+
+  // Find product in the cart
+  const cartItem = cart.find((item) => item.id === product.id);
+  const quantity = cartItem ? cartItem.cartQuantity : 0;
+
 
   const showAlert = (title: string, message: string) => {
     if (Platform.OS === 'web') {
@@ -72,9 +79,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   };
 
 
-  const increaseQuantity = () => setQuantity((prev) => prev + 1);
-  const decreaseQuantity = () =>
-    setQuantity((prev) => (prev > 0 ? prev - 1 : 0)); // Prevent going below 0
+  // const increaseQuantity = () => setQuantity((prev) => prev + 1);
+  // const decreaseQuantity = () =>
+  //   setQuantity((prev) => (prev > 0 ? prev - 1 : 0)); // Prevent going below 0
 
   return (
     <View style={styles.card}>
@@ -85,11 +92,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
 
       {/* Quantity Selector */}
       <View style={styles.quantityContainer}>
-        <TouchableOpacity style={styles.button} onPress={decreaseQuantity}>
+        <TouchableOpacity style={styles.button} onPress={() => {
+            if (quantity > 1) {
+              updateCartQuantity(product.id, quantity - 1);
+            } else {
+              removeFromCart(product.id);
+            }
+          }}>
           <Text style={styles.buttonText}>-</Text>
         </TouchableOpacity>
         <Text style={styles.quantity}>{quantity}</Text>
-        <TouchableOpacity style={styles.button} onPress={increaseQuantity}>
+        <TouchableOpacity style={styles.button} onPress={() => addToCart(product, 1)}>
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
@@ -105,7 +118,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       {/* Add to Cart Button */}
       <TouchableOpacity
         style={styles.addToCartButton}
-        onPress={() => onAddToCart(product, quantity)}
+        onPress={() => addToCart(product, 1)}
       >
         <Text style={styles.addToCartText}>Add to Cart</Text>
       </TouchableOpacity>

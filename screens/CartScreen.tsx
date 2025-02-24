@@ -255,7 +255,7 @@ export default function CartScreen() {
   const [contactNumber, setContactNumber] = useState('');
   const [address, setAddress] = useState('');
   // const [isModalVisible, setModalVisible] = useState(false); // Modal visibility state
-  const [isExpanded, setIsExpanded] = useState(false); // State to track if the list is expanded
+  const [isExpanded, setIsExpanded] = useState(true); // State to track if the list is expanded
   const [animatedHeight] = useState(new Animated.Value(0)); // Animated value for height transition
   const navigation = useNavigation<CartScreenNavigationProp>();
 
@@ -271,7 +271,7 @@ export default function CartScreen() {
       message,
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Remove', onPress: onRemove },
+        { text: 'Ok', onPress: onRemove },
       ]
     );
   }
@@ -302,7 +302,7 @@ export default function CartScreen() {
     Linking.openURL(`whatsapp://send?phone=${contactNumber}&text=${encodeURIComponent(message)}`);
 
     // Send message to the owner
-    const ownerNumber = '6205720019';
+    const ownerNumber = '+916205720019';
     Linking.openURL(`sms:${ownerNumber}?body=${encodeURIComponent(message)}`);
     Linking.openURL(`whatsapp://send?phone=${ownerNumber}&text=${encodeURIComponent(message)}`);
   
@@ -321,8 +321,9 @@ export default function CartScreen() {
       showAlert('Missing Information', 'Please provide your name , contact number and address.' , () => {});
     } else if (selectedPayment === 'Cash on Delivery') {
       // Confirm Cash on Delivery order
-      showAlert('Order Confirmed', 'Your order has been placed and will be paid on delivery.' , () => sendOrderMessage('Cash on Delivery'));
-      
+      showAlert('Order Confirmed', 'Your order has been placed and will be paid on delivery.', () => {
+        sendOrderMessage('Cash on Delivery'); // ✅ Automatically send message after confirming order
+      });      
     } else if (selectedPayment === 'Online Payment') {
       // Navigate to Online Payment
       navigation.navigate('OnlinePayment', {
@@ -332,6 +333,7 @@ export default function CartScreen() {
         cart,
         address,
       });
+      sendOrderMessage('Online Payment'); // ✅ Automatically send message for online payment
     } else {
       showAlert('Select Payment Method', 'Please choose a payment method to proceed.' , () => {});
     }
