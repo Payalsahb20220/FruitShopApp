@@ -11,6 +11,10 @@ import * as ImagePicker from 'expo-image-picker';
 
 import { Ionicons , MaterialIcons } from '@expo/vector-icons';
 
+import AboutScreen from './AboutScreen';  // ✅ Import About Screen
+import ContactScreen from './ContactScreen';  // ✅ Import Contact Screen
+
+
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -113,8 +117,8 @@ const handleImageUpload = async () => {
     //       <Text style={styles.linkText}>Signup</Text>
     //     </TouchableOpacity>
     //   </View>
-
-    <View style={styles.container}>
+<ScrollView contentContainerStyle={styles.container}>
+    {/* <View style={styles.container}> */}
     {/* Top Right Buttons */}
     {/* Wishlist Button */}
     {userDetails && (
@@ -215,7 +219,25 @@ const handleImageUpload = async () => {
       >
         <Text style={styles.buttonText}>Go to Cart</Text>
       </TouchableOpacity>
-    </View>
+
+      
+
+      {/* ✅ Add About and Contact Sections at Bottom */}
+      {/* Navigation Buttons for About and Contact Screens */}
+      {/* <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("About")}>
+        <Text style={styles.buttonText}>About Us</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Contact")}>
+        <Text style={styles.buttonText}>Contact Us</Text>
+      </TouchableOpacity> */}
+
+      {/* About Section */}
+      <AboutScreen/>
+      {/* Contact Section */}
+      <ContactScreen/>
+      
+    </ScrollView>
   );
 }
 
@@ -226,6 +248,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     backgroundColor: '#fff',
+    
   },
   topRightButtons: {
     position: 'absolute',
@@ -248,6 +271,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     marginBottom: 20,
+    marginTop:100,
   },
   title: {
     fontSize: 24,
@@ -327,6 +351,8 @@ const styles = StyleSheet.create({
     left: 20,
     zIndex: 10,
   },
+
+  
   
   
 });

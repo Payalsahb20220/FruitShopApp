@@ -14,6 +14,8 @@ export type RootStackParamList = {
     address:string;
   };
   Wishlist:undefined;
+  // Contact:undefined;
+  // About:undefined;
 
 };
   

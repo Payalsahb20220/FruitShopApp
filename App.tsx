@@ -12,6 +12,10 @@ import OnlinePayment from './screens/OnlinePayment';  // Import the OnlinePaymen
 import { WishlistProvider } from './contexts/WishlistContext'; // Adjust the path as needed
 import WishlistScreen from './screens/WishlistScreen';
 
+// import AboutScreen from './screens/AboutScreen';  // ✅ Import About Screen
+// import ContactScreen from './screens/ContactScreen';  // ✅ Import Contact Screen
+
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function App() {
   return (
@@ -26,6 +30,10 @@ export default function App() {
               <Stack.Screen name="Cart" component={CartScreen} />
               <Stack.Screen name="OnlinePayment" component={OnlinePayment} />
               <Stack.Screen name="Wishlist" component={WishlistScreen} />
+              {/* <Stack.Screen name="About" component={AboutScreen} />
+              <Stack.Screen name="Contact" component={ContactScreen} /> */}
+
+
 
             </Stack.Navigator>
           </NavigationContainer>
