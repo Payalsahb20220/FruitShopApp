@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     marginBottom: 20,
-    marginTop:100,
+    marginTop:70,
   },
   title: {
     fontSize: 24,
