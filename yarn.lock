@@ -4902,6 +4902,11 @@ expo-linking@~7.0.5:
     expo-constants "~17.0.5"
     invariant "^2.2.4"
 
+expo-location@^18.0.7:
+  version "18.0.7"
+  resolved "https://registry.yarnpkg.com/expo-location/-/expo-location-18.0.7.tgz#2aedac60b035b5038733a4d7aca4accf682282a8"
+  integrity sha512-EPN5yTtDCH3EMiJpJFCWuD+vJkhVbl1j3tMYo3wkhGJN7xlvZf6naLXj8vYntdXSa5M40KjOgjaRiUUqf6+dXw==
+
 expo-modules-autolinking@2.0.7:
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/expo-modules-autolinking/-/expo-modules-autolinking-2.0.7.tgz#fc40ba7505f42f971253ea20a927693f2c123a56"
@@ -5556,6 +5561,11 @@ hasown@^2.0.2:
   integrity sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==
   dependencies:
     function-bind "^1.1.2"
+
+haversine-distance@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/haversine-distance/-/haversine-distance-1.2.3.tgz#8414ab56a9fb85ecd5733c420d31294779f0f284"
+  integrity sha512-cRKtuukt+/fVprlLueX30mytMNtiQ4tff93FDW9yrBx3BYrq6gujiw1+hEaaxssKlOZTm8R3BPtMbNM+n0+bqQ==
 
 he@1.2.0, he@^1.2.0:
   version "1.2.0"

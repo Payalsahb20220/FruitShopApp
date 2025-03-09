@@ -214,7 +214,7 @@
 
 
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext ,useEffect, useState  } from 'react';
 import {
   View,
   Text,
@@ -226,9 +226,11 @@ import {
   // Modal,
   ScrollView,
   Animated,
+  ActivityIndicator
 } from 'react-native';
 import { useCart } from '../contexts/CartContext'; // Cart context
 import { useNavigation } from '@react-navigation/native';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { auth } from '../firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import { User } from 'firebase/auth';
@@ -236,7 +238,15 @@ import { RootStackParamList } from '../navigation/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
 import { Platform } from 'react-native';
+import * as Location from 'expo-location';
+import haversine from 'haversine-distance';
 
+
+// Owner's Fixed Address (Fruit Shop Location)
+const SHOP_LOCATION = {
+  latitude: 25.5437, // Katihar , Bihar
+  longitude: 87.5716,
+};
 
 export interface CartItem {
   id: number;
@@ -259,23 +269,101 @@ export default function CartScreen() {
   const [animatedHeight] = useState(new Animated.Value(0)); // Animated value for height transition
   const navigation = useNavigation<CartScreenNavigationProp>();
 
+  const [userDetails, setUserDetails] = useState<any>(null); 
+  const [distance, setDistance] = useState<any>(null);
+  const [loadingLocation, setLoadingLocation] = useState(false);
+
+  // Fetch user details (including address if available)
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          const db = getFirestore();
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            setUserDetails(userDoc.data());
+            setAddress(userDoc.data().address || ''); // Set saved address
+            setName(userDoc.data().name || '');
+            setContactNumber(userDoc.data().mobile || '');
+          }
+        } catch (error) {
+          console.error('Error fetching user details: ', error);
+        }
+      }
+    };
+    fetchUserDetails();
+  }, []);
+
+
   const showAlert = (title: string, message: string, onRemove: () => void) => {
-  if (Platform.OS === 'web') {
-    const confirmation = window.confirm(`${title}: ${message}`);
-    if (confirmation) {
-      onRemove();
+    if (Platform.OS === 'web') {
+      const confirmation = window.confirm(`${title}: ${message}`);
+      if (confirmation) {
+        onRemove();
+      }
+    } else {
+      Alert.alert(
+        title,
+        message,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Ok', onPress: onRemove },
+        ]
+      );
     }
-  } else {
-    Alert.alert(
-      title,
-      message,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Ok', onPress: onRemove },
-      ]
-    );
+  };
+
+
+  const calculateDistance = (lat:number, lng:number) => {
+    const userLocation = { latitude: lat, longitude: lng };
+    const distanceInMeters = haversine(SHOP_LOCATION, userLocation);
+    console.log(userLocation)
+    const distanceInKm = distanceInMeters / 1000;
+    setDistance(distanceInKm.toFixed(2));
+
+    if (distanceInKm > 5) {
+      Alert.alert('Out of Delivery Range', 'Sorry, delivery is only available within 5km.');
+    }
+  };
+
+  const openGoogleMaps = () => {
+    Linking.openURL('https://www.google.com/maps/search/?api=1&query=current+location');
+  };
+
+
+// Get User's Current Location
+const getCurrentLocation = async () => {
+  setLoadingLocation(true);
+  try {
+    // Request permission
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      showAlert('Permission Denied', 'Allow location access to autofill your address.' , () => {});
+      setLoadingLocation(false);
+      return;
+    }
+
+    // Get current location
+    let location = await Location.getCurrentPositionAsync({});
+    let { latitude, longitude } = location.coords;
+
+    // Reverse geocoding to get address
+    let geocode = await Location.reverseGeocodeAsync({ latitude, longitude });
+
+    if (geocode.length > 0) {
+      let formattedAddress = `${geocode[0].street}, ${geocode[0].city}, ${geocode[0].region}, ${geocode[0].country}`;
+      setAddress(formattedAddress);
+      calculateDistance(latitude, longitude);
+    }
+  } catch (error) {
+    console.error('Error fetching location:', error);
+    showAlert('Error', 'Unable to fetch your location. Try again.' , () => {});
+  } finally {
+    setLoadingLocation(false);
   }
 };
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -449,6 +537,16 @@ export default function CartScreen() {
               // returnKeyType="done"
               // onSubmitEditing={() => Keyboard.dismiss()}
             />
+
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.button} onPress={getCurrentLocation}>
+                {loadingLocation ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Use Current Location</Text>}
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={openGoogleMaps}>
+                <Text style={styles.buttonText}>Select from Map</Text>
+              </TouchableOpacity>
+            </View>
+            {/* {distance && <Text style={styles.distanceText}>Distance: {distance} km</Text>} */}
             
           </View>
           <View style={styles.paymentContainer}>
@@ -514,6 +612,11 @@ const styles = StyleSheet.create({
   checkoutButtonText: { color: '#fff', textAlign: 'center', fontSize: 18 },
   toggleButton: { marginTop: 10, backgroundColor: '#FFA500', padding: 10, borderRadius: 5 },
   toggleButtonText: { color: '#fff', textAlign: 'center', fontSize: 16 },
+  buttonContainer: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 0 },
+  button: { flex: 1, marginHorizontal: 5, backgroundColor: '#FFA500', padding: 4, borderRadius: 5, alignItems: 'center' },
+  buttonText: { color: '#fff', fontSize: 14 },
+  distanceText: { fontSize: 13, fontWeight: 'bold', color: 'red', marginTop: 10, textAlign: 'center' },
+
 });
 
 

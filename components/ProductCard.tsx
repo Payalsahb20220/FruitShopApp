@@ -31,7 +31,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const showAlert = (title: string, message: string) => {
     if (Platform.OS === 'web') {
-      alert(`${title}: ${message}`);
+      window.alert(`${title}: ${message}`);
     } else {
       Alert.alert(title, message);
     }
@@ -55,6 +55,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const handleLike = async () => {
     if (!auth.currentUser) {
+      console.log("User not logged in!")
       showAlert("Login Required", "Please log in to use the wishlist.");
       return;
     }
