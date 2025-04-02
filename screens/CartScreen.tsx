@@ -335,31 +335,62 @@ export default function CartScreen() {
 // Get User's Current Location
 const getCurrentLocation = async () => {
   setLoadingLocation(true);
-  try {
-    // Request permission
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      showAlert('Permission Denied', 'Allow location access to autofill your address.' , () => {});
+
+  if (Platform.OS === "web") {
+    // Web: Use browser's built-in Geolocation API
+    if (!navigator.geolocation) {
+      showAlert("Error", "Geolocation is not supported in this browser.", () => {});
       setLoadingLocation(false);
       return;
     }
 
-    // Get current location
-    let location = await Location.getCurrentPositionAsync({});
-    let { latitude, longitude } = location.coords;
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
 
-    // Reverse geocoding to get address
-    let geocode = await Location.reverseGeocodeAsync({ latitude, longitude });
+        // Reverse geocode to get address
+        try {
+          let geocode = await Location.reverseGeocodeAsync({ latitude, longitude });
+          if (geocode.length > 0) {
+            let formattedAddress = `${geocode[0].name} , ${geocode[0].street}, ${geocode[0].city}, ${geocode[0].region}, ${geocode[0].country}`;
+            setAddress(formattedAddress);
+            calculateDistance(latitude, longitude);
+          }
+        } catch (error) {
+          console.error("Error getting address:", error);
+        }
+        setLoadingLocation(false);
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        showAlert("Error", "Unable to fetch your location. Try again.", () => {});
+        setLoadingLocation(false);
+      }
+    );
+  } else {
+    // Mobile: Use Expo Location
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        showAlert("Permission Denied", "Allow location access to autofill your address.", () => {});
+        setLoadingLocation(false);
+        return;
+      }
 
-    if (geocode.length > 0) {
-      let formattedAddress = `${geocode[0].street}, ${geocode[0].city}, ${geocode[0].region}, ${geocode[0].country}`;
-      setAddress(formattedAddress);
-      calculateDistance(latitude, longitude);
+      let location = await Location.getCurrentPositionAsync({});
+      let { latitude, longitude } = location.coords;
+
+      let geocode = await Location.reverseGeocodeAsync({ latitude, longitude });
+
+      if (geocode.length > 0) {
+        let formattedAddress = `${geocode[0].name} , ${geocode[0].street}, ${geocode[0].city}, ${geocode[0].region}, ${geocode[0].country}`;
+        setAddress(formattedAddress);
+        calculateDistance(latitude, longitude);
+      }
+    } catch (error) {
+      console.error("Error fetching location:", error);
+      showAlert("Error", "Unable to fetch your location. Try again.", () => {});
     }
-  } catch (error) {
-    console.error('Error fetching location:', error);
-    showAlert('Error', 'Unable to fetch your location. Try again.' , () => {});
-  } finally {
     setLoadingLocation(false);
   }
 };
@@ -546,7 +577,7 @@ const getCurrentLocation = async () => {
                 <Text style={styles.buttonText}>Select from Map</Text>
               </TouchableOpacity>
             </View>
-            {/* {distance && <Text style={styles.distanceText}>Distance: {distance} km</Text>} */}
+            {distance && <Text style={styles.distanceText}>Distance: {distance} km</Text>}
             
           </View>
           <View style={styles.paymentContainer}>
