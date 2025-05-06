@@ -53,9 +53,9 @@
 
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity , Platform, ScrollView , Linking} from 'react-native';
 import { WebView } from 'react-native-webview';
-import * as Linking from 'expo-linking';
+// import * as Linking from 'expo-linking';
 
 export default function OnlinePayment({ route }: any) {
   const { name, contactNumber, totalPrice, cart } = route.params;
@@ -80,129 +80,156 @@ export default function OnlinePayment({ route }: any) {
 
   if (paymentStatus === 'success') {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Payment Successful</Text>
-        <Text style={styles.text}>Thank you for your payment! Your order is being processed.</Text>
-        <TouchableOpacity style={styles.button} onPress={() => {/* Navigate to another screen */}}>
+      <View style={styles.successContainer}>
+        <Text style={styles.successTitle}>🎉 Payment Successful!</Text>
+        <Text style={styles.successMessage}>Thank you for your payment. Your order is on its way!</Text>
+        <TouchableOpacity style={styles.button} onPress={() => {}}>
           <Text style={styles.buttonText}>Go to Orders</Text>
         </TouchableOpacity>
       </View>
+
     );
   }
 
   return (
-    <View style={styles.container}>
-      {/* <Text style={styles.title}>Online Payment</Text> */}
-      <Text style={styles.subTitle}>Your Order Summary</Text>
-      <View style={styles.infoContainer}>
-        <Text style={styles.text}><Text style={styles.bold}>Name:</Text> {name}</Text>
-        <Text style={styles.text}><Text style={styles.bold}>Contact:</Text> {contactNumber}</Text>
-        <Text style={styles.text}><Text style={styles.bold}>Total Price:</Text> ₹{totalPrice.toFixed(2)}</Text>
-      </View>
+    <ScrollView contentContainerStyle={styles.container}>
+    <Text style={styles.title}>Online Payment</Text>
 
-      <Text style={styles.subTitle}>Cart Items:</Text>
-      <View style={styles.cartList}>
-        {cart.map((item: any, index: number) => (
-          <Text key={index} style={styles.cartItem}>{item.name} (x{item.cartQuantity}): ₹{item.price.toFixed(2)}
-          </Text>
-        ))}
-      </View>
-
-      <Text style={styles.note}>Redirecting to PayPal for payment...</Text>
-
-      <View style={styles.webViewContainer}>
-        <WebView
-          source={{ uri: paypalUrl }}
-          onNavigationStateChange={handleNavigationStateChange}
-          startInLoadingState={true}
-          renderLoading={() => <ActivityIndicator size="large" color="#4CAF50" />}
-        />
-      </View>
+    <View style={styles.infoBox}>
+      <Text style={styles.label}><Text style={styles.bold}>Name:</Text> {name}</Text>
+      <Text style={styles.label}><Text style={styles.bold}>Contact:</Text> {contactNumber}</Text>
+      <Text style={styles.label}><Text style={styles.bold}>Total:</Text> ₹{totalPrice.toFixed(2)}</Text>
     </View>
+
+    <Text style={styles.sectionTitle}>Cart Items</Text>
+    <View style={styles.cartBox}>
+      {cart.map((item: any, index: number) => (
+        <Text key={index} style={styles.cartItem}>
+          🧺 {item.name} (Quantity: {item.cartQuantity}) - ₹{item.price.toFixed(2)}
+        </Text>
+      ))}
+    </View>
+
+    <Text style={styles.note}>Redirecting to PayPal for payment...</Text>
+
+    <View style={styles.webViewContainer}>
+    {Platform.OS === 'web' ? (
+  <View style={styles.webViewContainer}>
+    <Text style={styles.note}>
+      WebView is not supported on web.{' '}
+      <Text style={{ color: 'blue' }} onPress={() => window.open(paypalUrl, '_blank')}>
+        Click here
+      </Text>{' '}
+      to open PayPal in a new tab.
+    </Text>
+  </View>
+) : (
+  <View style={styles.webViewContainer}>
+    <WebView
+      source={{ uri: paypalUrl }}
+      onNavigationStateChange={handleNavigationStateChange}
+      startInLoadingState
+      renderLoading={() => <ActivityIndicator size="large" color="#FFA500" />}
+    />
+  </View>
+)}
+    </View>
+  </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#fff8f0',
+    flexGrow: 1,
   },
   title: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 10,
+    color: '#FF8C00',
     textAlign: 'center',
+    marginBottom: 20,
   },
-  subTitle: {
-    fontSize: 18,
-    fontWeight: '500',
-    marginTop: 20,
-    color: '#555',
+  infoBox: {
+    backgroundColor: '#fff3e0',
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#FFD180',
   },
-  text: {
+  label: {
     fontSize: 16,
-    marginBottom: 10,
+    marginVertical: 4,
     color: '#333',
   },
   bold: {
     fontWeight: 'bold',
     color: '#000',
   },
-  infoContainer: {
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    marginVertical: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 10,
+    marginBottom: 6,
+    color: '#FF8C00',
   },
-  cartList: {
-    backgroundColor: '#fff',
+  cartBox: {
+    backgroundColor: '#fff3e0',
     padding: 10,
     borderRadius: 10,
-    marginVertical: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#FFD180',
   },
   cartItem: {
-    fontSize: 14,
-    marginLeft: 10,
+    fontSize: 15,
+    marginBottom: 6,
     color: '#555',
   },
   note: {
-    marginTop: 20,
     fontSize: 14,
-    color: '#888',
+    color: '#777',
     textAlign: 'center',
+    marginBottom: 10,
   },
   webViewContainer: {
-    flex: 1,
-    marginTop: 20,
-    borderRadius: 10,
+    height: Platform.OS === 'web' ? 500 : 400,
+    borderRadius: 12,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#ccc',
+  },
+  successContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff8f0',
+    padding: 20,
+  },
+  successTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2e7d32',
+    marginBottom: 10,
+  },
+  successMessage: {
+    fontSize: 16,
+    color: '#555',
+    textAlign: 'center',
+    marginBottom: 20,
   },
   button: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#FFA500',
     paddingVertical: 12,
-    paddingHorizontal: 25,
+    paddingHorizontal: 30,
     borderRadius: 25,
-    marginTop: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
+    fontWeight: '600',
     fontSize: 16,
-    fontWeight: 'bold',
   },
 });
